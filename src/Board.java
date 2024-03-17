@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -36,40 +34,115 @@ public class Board {
     }
 
     // copies a board and places a new tile
-    public Board placeTile(Cell cell, int number) {
-        // if the board is full return null so we can end the game
+    public Board placeTile() {
 
         Board result = new Board(this.board, this.score);
-        result.board[cell.getX()][cell.getY()] = number;
-
         List<Cell> emptyCells = emptyCells();
         // if the board is full return null so we can end the game
         if (emptyCells.isEmpty()) {
             return null;
-        } else if (emptyCells.contains(spawnCell)) {
-            // spawn at spawnCell
+        }
+        if (!emptyCells.contains(spawnCell)) {
+            result.board[spawnCell.getX()][spawnCell.getY()] = 2;
         } else {
-            boolean spawned = false;
-            while (!spawned) {
-                for (int x = spawnCell.getX(); x < board.length; x++) {
-                    for (int y = spawnCell.getY(); y < board.length; y++) {
-                        Cell tempCell = new Cell(x, y);
-                        if (emptyCells.contains(tempCell)) {
-                            spawnCell = tempCell;
-                            spawned = true;
-                            // spawn at tempCell
-                        }
+            for (int x = 0; x < board.length; x++) {
+                for (int y = 0; y < board.length; y++) {
+                    Cell tempCell = new Cell(x, y);
+                    if (!emptyCells.contains(tempCell)) {
+                        result.board[tempCell.getX()][tempCell.getY()] = 2;
                     }
                 }
-                // if we went through the whole board and didn't spawn, loop back to (0,0) and try again
-                if (!spawned) {
-                    spawnCell = new Cell(0, 0);
-                }
             }
-
         }
         return result;
     }
+
+    private static int[][] transpose(int[][] input) {
+        int[][] result = new int[input.length][];
+
+        for (int x = 0; x < input.length; ++x) {
+            result[x] = new int[input[0].length];
+            for (int y = 0; y < input[0].length; ++y) {
+                result[x][y] = input[y][x];
+            }
+        }
+
+        return result;
+    }
+
+    private static int[][] reverse(int[][] input) {
+        int[][] result = new int[input.length][];
+
+        for (int x = 0; x < input.length; ++x) {
+            result[x] = new int[input[0].length];
+            for (int y = 0; y < input[0].length; ++y) {
+                result[x][y] = input[x][input.length - y - 1];
+            }
+        }
+
+        return result;
+    }
+
+    public Board move(Move move) {
+        int newScore = 0;
+
+        // Clone the board
+        int[][] tiles = new int[this.board.length][];
+        for (int x = 0; x < this.board.length; ++x) {
+            tiles[x] = Arrays.copyOf(this.board[x], this.board[x].length);
+        }
+        if (move == Move.LEFT || move == Move.RIGHT) {
+            tiles = transpose(tiles);
+
+        }
+        if (move == Move.DOWN || move == Move.RIGHT) {
+            tiles = reverse(tiles);
+        }
+
+        int[][] result = new int[tiles.length][];
+
+        for (int x = 0; x < tiles.length; ++x) {
+            LinkedList<Integer> thisRow = new LinkedList<>();
+            for (int y = 0; y < tiles[0].length; ++y) {
+                if (tiles[x][y] > 0) {
+                    thisRow.add(tiles[x][y]);
+                }
+            }
+
+            LinkedList<Integer> newRow = new LinkedList<>();
+            while (thisRow.size() >= 2) {
+                int first = thisRow.pop();
+                int second = thisRow.peek();
+                if (second == first) {
+                    int newNumber = first * 2;
+                    newRow.add(newNumber);
+                    newScore += newNumber;
+                    thisRow.pop();
+                } else {
+                    newRow.add(first);
+                }
+            }
+            newRow.addAll(thisRow);
+            result[x] = new int[tiles[0].length];
+            for (int y = 0; y < tiles[0].length; ++y) {
+                if (newRow.isEmpty()) {
+                    result[x][y] = 0;
+                } else {
+                    result[x][y] = newRow.pop();
+                }
+            }
+        }
+        if (move == Move.DOWN || move == Move.RIGHT) {
+            result = reverse(result);
+        }
+        if (move == Move.LEFT || move == Move.RIGHT) {
+            result = transpose(result);
+        }
+        return new Board(result, this.score + newScore);
+    }
+
+
+
     public int getSize() {
         return board.length;
     }
