@@ -17,7 +17,14 @@ public class AStar {
             }
             
             closedList.add(currentBoard);
-            openList.addAll(currentBoard.getSuccessors(currentBoard));
+            
+            // Generate successor states by applying each possible move
+            for (Move move : Move.values()) {
+                Board successor = currentBoard.move(move);
+                if (successor != null && !closedList.contains(successor)) {
+                    openList.add(successor);
+                }
+            }
         }
         
         // If no solution is found
