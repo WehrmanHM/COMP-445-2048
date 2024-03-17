@@ -172,11 +172,41 @@ public class Board {
         return result;
     }
 
-    public List<Board> getSuccessors(Board board) {
+    // returns the heuristic value of a board
+    public float getValue() {
+        int tileTotal = 0;
+        int numTiles = 0;
+        for (int[] ints : board) {
+            for (int y = 0; y < board.length; y++) {
+                if (ints[y] != 0) {
+                    tileTotal += ints[y];
+                    numTiles++;
+                }
+            }
+        }
+        return (float)tileTotal/numTiles + score;
+    }
+
+    // returns true if this board is a goal state (to be defined)
+    public boolean isGoal() {
+        return false;
+    }
+
+    public List<Board> getSuccessors() {
         List<Board> successors = new ArrayList<>();
         for (Move move : Move.values()) {
-            successors.add(move(move));
+            successors.add(this.move(move));
         }
         return successors;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        Board tempBoard = (Board) obj;
+        return (Arrays.deepEquals(tempBoard.board, this.board));
     }
 }
