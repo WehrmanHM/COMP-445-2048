@@ -12,6 +12,7 @@ public class Main {
         for (Board succ : successors) {
             printBoard(succ);
         }
+        // comment
 //        do {
 //            System.out.println("Player move");
 //            System.out.println("=============");
