@@ -7,17 +7,20 @@ public class AStar {
         Set<Board> closedList = new HashSet<>();
         
         openList.add(initialBoard);
+       
         
         while (!openList.isEmpty()) {
-            Board currentBoard = openList.poll();
             
+            Board currentBoard = openList.poll();
+            Main.printBoard(currentBoard);
+
             if (currentBoard.isGoalState(goalNum)) {
                 // Found the goal state, return the sequence of moves
                 return currentBoard.getSolution();
             }
             
             closedList.add(currentBoard);
-            
+
             // Generate successor states by applying each possible move
             for (Move move : Move.values()) {
                 Board successor = currentBoard.move(move);
