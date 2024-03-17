@@ -44,19 +44,22 @@ public class Board {
         // if the board is full return null so we can end the game
         if (emptyCells.isEmpty()) {
             return null;
-        }
-        if (!emptyCells.contains(spawnCell)) {
-            result.board[spawnCell.getX()][spawnCell.getY()] = 2;
         } else {
-            for (int x = 0; x < board.length; x++) {
-                for (int y = 0; y < board.length; y++) {
-                    Cell tempCell = new Cell(x, y);
-                    if (!emptyCells.contains(tempCell)) {
-                        result.board[tempCell.getX()][tempCell.getY()] = 2;
-                    }
-                }
-            }
+            Cell newSpawn = emptyCells.getFirst();
+            result.board[newSpawn.getX()][newSpawn.getY()] = 2;
         }
+//        if (!emptyCells.contains(spawnCell)) {
+//            result.board[spawnCell.getX()][spawnCell.getY()] = 2;
+//        } else {
+//            for (int x = 0; x < board.length; x++) {
+//                for (int y = 0; y < board.length; y++) {
+//                    Cell tempCell = new Cell(x, y);
+//                    if (!emptyCells.contains(tempCell)) {
+//                        result.board[tempCell.getX()][tempCell.getY()] = 2;
+//                    }
+//                }
+//            }
+//        }
         return result;
     }
 
@@ -88,7 +91,7 @@ public class Board {
 
     public Board move(Move move) {
         int newScore = 0;
-
+        System.out.println(move.toString());
         // Clone the board
         int[][] tiles = new int[this.board.length][];
         for (int x = 0; x < this.board.length; ++x) {
@@ -145,7 +148,7 @@ public class Board {
         Board successor = new Board(result, this.score + newScore);
         successor.parent = this; // Set the current board as the parent
         successor.moveFromParent = move; // Set the move made from the parent
-        return successor;
+        return successor.placeTile();
     }
 
 
@@ -179,25 +182,21 @@ public class Board {
         return result;
     }
 
-    // returns the heuristic value of a board
-    public float getValue() {
-        int tileTotal = 0;
-        int numTiles = 0;
-        for (int[] ints : board) {
-            for (int y = 0; y < board.length; y++) {
-                if (ints[y] != 0) {
-                    tileTotal += ints[y];
-                    numTiles++;
-                }
-            }
-        }
-        return (float)tileTotal/numTiles + score;
-    }
+//    // returns the heuristic value of a board
+//    public float getValue() {
+//        int tileTotal = 0;
+//        int numTiles = 0;
+//        for (int[] ints : board) {
+//            for (int y = 0; y < board.length; y++) {
+//                if (ints[y] != 0) {
+//                    tileTotal += ints[y];
+//                    numTiles++;
+//                }
+//            }
+//        }
+//        return (float)tileTotal/numTiles + score;
+//    }
 
-    // returns true if this board is a goal state (to be defined)
-    public boolean isGoal() {
-        return false;
-    }
 
     public List<Board> getSuccessors() {
         List<Board> successors = new ArrayList<>();
@@ -209,14 +208,18 @@ public class Board {
     // I Wrote these next couple  -Chris
 
     public Boolean isGoalState(int winNum){
-		for(int i=0;i<board.length;i++){
-			for(int u=0;u<board.length;u++){
-				if(board[i][u]==winNum){
-					return true;
-				}
-			}
-		}
-		return false;
+        boolean isGoal = false;
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board.length; y++) {
+                //System.out.println(board[x][y]);
+                if (board[x][y] == winNum) {
+                    isGoal = true;
+                    break;
+                }
+            }
+        }
+        System.out.println(isGoal);
+		return isGoal;
 	}
 
     public int getH() {
@@ -251,8 +254,6 @@ public class Board {
 
         return solution;
     }
-
-
 
     @Override
     public boolean equals(Object obj) {

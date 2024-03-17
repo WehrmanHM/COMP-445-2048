@@ -1,21 +1,28 @@
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         Board board = new Board(4);
         Player player = new Player();
-        for (int i = 0; i < 2; i++) {
-            board.placeTile();
+        board = board.placeTile();
+        printBoard(board);
+//        BacktrackingBeamSearch backtrack = new BacktrackingBeamSearch(board, 4, 5);
+//        printBoard(backtrack.search());
+        List<Board> successors = board.getSuccessors();
+        for (Board succ : successors) {
+            printBoard(succ);
         }
-        do {
-            System.out.println("Player move");
-            System.out.println("=============");
-            board = player.makeMove(board);
-            printBoard(board);
-
-            System.out.println("Computer move");
-            System.out.println("===============");
-            board = board.placeTile();
-            printBoard(board);
-        } while (!board.emptyCells().isEmpty());
+//        do {
+//            System.out.println("Player move");
+//            System.out.println("=============");
+//            board = player.makeMove(board);
+//            printBoard(board);
+//
+////            System.out.println("Computer move");
+////            System.out.println("===============");
+////            board = board.placeTile();
+////            printBoard(board);
+//        } while (!board.emptyCells().isEmpty());
     }
 
     public static void printBoard(Board board) {
