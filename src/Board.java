@@ -178,6 +178,13 @@ public class Board {
         return result;
     }
 
+    public List<Board> getSuccessors(Board board) {
+        List<Board> successors = new ArrayList<>();
+        for (Move move : Move.values()) {
+            successors.add(move(move));
+        }
+        return successors;
+    }
     // I Wrote these next couple :] -Chris
 
     public Boolean isGoalState(int winNum){		
