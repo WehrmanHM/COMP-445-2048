@@ -9,6 +9,9 @@ public class Board {
     private int[][] board;
     private int score;
     private Cell spawnCell = new Cell(0, 0);
+    private Board parent; // Add parent field to keep track of the parent board
+    private Move moveFromParent; // Add moveFromParent field to keep track of the move made from the parent board
+
 
     // default constructor, creates a size x size board
     public Board(int size) {
@@ -138,7 +141,11 @@ public class Board {
         if (move == Move.LEFT || move == Move.RIGHT) {
             result = transpose(result);
         }
-        return new Board(result, this.score + newScore);
+
+        Board successor = new Board(result, this.score + newScore);
+        successor.parent = this; // Set the current board as the parent
+        successor.moveFromParent = move; // Set the move made from the parent
+        return successor;
     }
 
 
@@ -199,6 +206,52 @@ public class Board {
         }
         return successors;
     }
+    // I Wrote these next couple  -Chris
+
+    public Boolean isGoalState(int winNum){
+		for(int i=0;i<board.length;i++){
+			for(int u=0;u<board.length;u++){
+				if(board[i][u]==winNum){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+    public int getH() {
+        int sum = 0;
+        int count = 0;
+        for (int[] row : board) {
+            for (int value : row) {
+                if (value != 0) {
+                    sum += value;
+                    count++;
+                }
+            }
+        }
+        return count == 0 ? 0 : sum / count;
+    }
+
+    public int getF() {
+        int gCost = score;
+        int hCost = getH();
+        return gCost + hCost;
+    }
+
+    public List<Move> getSolution() {
+        List<Move> solution = new ArrayList<>();
+        Board currentBoard = this; // Start from the current board
+
+        // Traverse back through the parent boards until reaching the initial state
+        while (currentBoard.parent != null) {
+            solution.add(0, currentBoard.moveFromParent); // Add the move to the beginning of the list
+            currentBoard = currentBoard.parent; // Move to the parent board
+        }
+
+        return solution;
+    }
+
 
 
     @Override
