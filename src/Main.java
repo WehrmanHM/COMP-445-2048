@@ -1,5 +1,39 @@
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
+        runGameAStar(16);
+        //runGameRandom();
+    }
+
+    public static void runGameAStar(int goal){
+        Board board = new Board(4);
+        for (int i = 0; i < 2; i++) {
+            board.placeTile();
+        }
+        // Call the A* solver to find the solution
+        List<Move> solution = AStar.solve(board, goal);
+        // Check if a solution is found
+        if (solution != null) {
+            // Print the solution
+            System.out.println("Solution:");
+            for (Move move : solution) {
+                System.out.println("Player move");
+            System.out.println("=============");
+            board = board.move(move);
+            printBoard(board);
+
+            System.out.println("Computer move");
+            System.out.println("===============");
+            board = board.placeTile();
+            printBoard(board);
+            }
+        } else {
+            System.out.println("No solution found.");
+        }
+    }
+
+    public static void runGameRandom(){
         Board board = new Board(4);
         Player player = new Player();
         for (int i = 0; i < 2; i++) {
@@ -15,7 +49,7 @@ public class Main {
             System.out.println("===============");
             board = board.placeTile();
             printBoard(board);
-        } while (!board.emptyCells().isEmpty());
+        } while (!board.emptyCells().isEmpty());   
     }
 
     public static void printBoard(Board board) {
