@@ -1,14 +1,15 @@
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-
-/**
+/*
  * Much of the code below is taken from https://www.baeldung.com/2048-java-solver
  */
 
 public class Board {
     private int[][] board;
     private int score;
-    private Cell spawnCell = new Cell(0, 0);
+    //private Cell spawnCell = new Cell(0, 0);
     private Board parent; // Add parent field to keep track of the parent board
     private Move moveFromParent; // Add moveFromParent field to keep track of the move made from the parent board
 
@@ -45,7 +46,7 @@ public class Board {
         if (emptyCells.isEmpty()) {
             return null;
         } else {
-            Cell newSpawn = emptyCells.getFirst();
+            Cell newSpawn = emptyCells.get(0);
             result.board[newSpawn.getX()][newSpawn.getY()] = 2;
         }
 //        if (!emptyCells.contains(spawnCell)) {

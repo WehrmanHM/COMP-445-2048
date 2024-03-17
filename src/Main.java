@@ -2,28 +2,35 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        runAStar(16);
+    }
+
+    public static void runAStar(int goalNum){
+
         Board board = new Board(4);
-        Player player = new Player();
+        // Create the initial board state
         board = board.placeTile();
         printBoard(board);
-//        BacktrackingBeamSearch backtrack = new BacktrackingBeamSearch(board, 4, 5);
-//        printBoard(backtrack.search());
-        List<Board> successors = board.getSuccessors();
-        for (Board succ : successors) {
-            printBoard(succ);
+
+        // Call the A* solver to find the solution
+        List<Move> solution = AStar.solve(board, goalNum);
+
+        // Check if a solution is found
+        if (solution != null) {
+            // Print the solution
+            System.out.println("Solution:");
+            for (Move move : solution) {
+                board =board.move(move);
+                printBoard(board);
+            }
+        } else {
+            System.out.println("No solution found.");
         }
-        // comment
-//        do {
-//            System.out.println("Player move");
-//            System.out.println("=============");
-//            board = player.makeMove(board);
-//            printBoard(board);
-//
-////            System.out.println("Computer move");
-////            System.out.println("===============");
-////            board = board.placeTile();
-////            printBoard(board);
-//        } while (!board.emptyCells().isEmpty());
+        
+        // List<Board> successors = board.getSuccessors();
+        // for (Board succ : successors) {
+        //     printBoard(succ);
+        // }
     }
 
     public static void printBoard(Board board) {
@@ -62,3 +69,16 @@ public class Main {
         System.out.println("Score: " + board.getScore());
     }
 }
+
+        // comment
+//        do {
+//            System.out.println("Player move");
+//            System.out.println("=============");
+//            board = player.makeMove(board);
+//            printBoard(board);
+//
+////            System.out.println("Computer move");
+////            System.out.println("===============");
+////            board = board.placeTile();
+////            printBoard(board);
+//        } while (!board.emptyCells().isEmpty());
