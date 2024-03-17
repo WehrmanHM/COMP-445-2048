@@ -185,7 +185,7 @@ public class Board {
         }
         return successors;
     }
-    // I Wrote these next couple :] -Chris
+    // I Wrote these next couple  -Chris
 
     public Boolean isGoalState(int winNum){		
 		for(int i=0;i<board.length;i++){
@@ -213,13 +213,8 @@ public class Board {
     }
     
     public int getF() {
-        // g-cost: the score obtained so far
         int gCost = score;
-        
-        // h-cost: the estimated cost to reach the goal state from the current state
         int hCost = getH();
-        
-        // f-cost: the total cost
         return gCost + hCost;
     }
     
