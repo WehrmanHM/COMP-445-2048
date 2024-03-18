@@ -2,7 +2,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        runAStar(4096, 2);
+        for (int i = 0; i < 50; i++){
+            runAStar(4096, 2);
+        }
+        
     }
 
     public static void runAStar(int goalNum, int verbosity){
@@ -10,7 +13,6 @@ public class Main {
         Board board = new Board(4);
         // Create the initial board state
         board = board.placeTile();
-        printBoard(board);
 
         // Call the A* solver to find the solution
         long startTime = System.nanoTime();
@@ -25,7 +27,7 @@ public class Main {
             if (verbosity == 1 || verbosity == 2){
             System.out.println("Solution:");
             System.out.println("Elapsed time: " + elapsedTimeInSeconds + " seconds");
-            System.out.println(solution.size() +" moves");
+            System.out.println(solution.size() +" moves \n \n ");
             }
             if (verbosity == 0){System.out.println(solution);}
         } else {
