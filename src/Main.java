@@ -2,10 +2,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        runAStar(16);
+        runAStar(4096, 2);
     }
 
-    public static void runAStar(int goalNum){
+    public static void runAStar(int goalNum, int verbosity){
 
         Board board = new Board(4);
         // Create the initial board state
@@ -13,16 +13,21 @@ public class Main {
         printBoard(board);
 
         // Call the A* solver to find the solution
-        List<Move> solution = AStar.solve(board, goalNum);
-
+        long startTime = System.nanoTime();
+        List<Move> solution = AStar.solve(board, goalNum, verbosity);
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+    // Convert elapsed time from nanoseconds to milliseconds
+        double elapsedTimeInSeconds = elapsedTime / 1_000_000_000.0;
         // Check if a solution is found
         if (solution != null) {
             // Print the solution
+            if (verbosity == 1 || verbosity == 2){
             System.out.println("Solution:");
-            for (Move move : solution) {
-                board =board.move(move);
-                printBoard(board);
+            System.out.println("Elapsed time: " + elapsedTimeInSeconds + " seconds");
+            System.out.println(solution.size() +" moves");
             }
+            if (verbosity == 0){System.out.println(solution);}
         } else {
             System.out.println("No solution found.");
         }
