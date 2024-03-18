@@ -5,27 +5,36 @@ public class Main {
         Board board = new Board(4);
         Player player = new Player();
         board = board.placeTile();
-        printBoard(board);
-//        BacktrackingBeamSearch backtrack = new BacktrackingBeamSearch(board, 4, 5);
-//        printBoard(backtrack.search());
-        List<Board> successors = board.getSuccessors();
-        for (Board succ : successors) {
-            printBoard(succ);
+        board = board.placeTile();
+        for (int i = 75; i <= 200; i++) {
+            try {
+                BacktrackingBeamSearch backtrack = new BacktrackingBeamSearch(board, 16384, i);
+                System.out.println("Score at beam width " + i + ": " + backtrack.search().getScore());
+                board = new Board(4);
+                board = board.placeTile().placeTile();
+            } catch (NullPointerException n) {
+                //System.out.println(n.getMessage());
+                System.out.println("Search failed for beam width " + i);
+            }
+            }
         }
-        // comment
+//        List<Board> successors = board.getSuccessors();
+//        for (Board succ : successors) {
+//            printBoard(succ);
+//        }
+
 //        do {
 //            System.out.println("Player move");
 //            System.out.println("=============");
 //            board = player.makeMove(board);
 //            printBoard(board);
-//
+////
 ////            System.out.println("Computer move");
 ////            System.out.println("===============");
 ////            board = board.placeTile();
 ////            printBoard(board);
 //        } while (!board.emptyCells().isEmpty());
-    }
-
+//  }
     public static void printBoard(Board board) {
         StringBuilder topLines = new StringBuilder();
         StringBuilder midLines = new StringBuilder();

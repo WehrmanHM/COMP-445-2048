@@ -13,15 +13,20 @@ public class BacktrackingBeamSearch {
     private List<Board> nextLayer = new ArrayList<>();
     private List<Board> extraNodes = new ArrayList<>();
 
-    private final int beamWidth = 5;
+    private int winNum;
 
-    public BacktrackingBeamSearch (Board initialState) {
+    private int beamWidth;
+
+    public BacktrackingBeamSearch (Board initialState, int winNum, int beamWidth) {
         currentLayer.add(initialState);
         considered.add(initialState);
+        this.winNum = winNum;
+        this.beamWidth = beamWidth;
     }
-    public Board search(int beamWidth) {
+    public Board search() {
         Board solution = null;
         while ((solution == null) && ((!currentLayer.isEmpty() || !extraNodes.isEmpty()))) {
+            //System.out.println("Expanding...");
             solution = expandLayer();
         }
         return solution;
@@ -47,43 +52,49 @@ public class BacktrackingBeamSearch {
         nextLayer = new ArrayList<>();
         List<Board> candidates = new ArrayList<>();
         for (Board candidate : currentLayer) {
-            if (candidate.isGoal()) {
+            if (candidate.isGoalState(winNum)) {
                 candidates.add(candidate);
+                //System.out.println("Candidate score: " + candidate.getScore());
             }
         }
         float bestScore = MIN_VALUE;
         Board bestBoard = null;
         for (Board candidate : candidates) {
-            if (candidate.getValue() > bestScore) {
+            if (candidate.getF() > bestScore) {
                 bestBoard = candidate;
-                bestScore = bestBoard.getValue();
+                bestScore = bestBoard.getF();
             }
         }
         return bestBoard;
     }
 
-    private void expandNode(Board board) {
+    private void expandNode(Board board) throws NullPointerException {
         List<Board> children = board.getSuccessors();
         for (Board child : children) {
             // line 3-5 of pseudocode
             if ((nextLayer.size() < beamWidth) && (!considered.contains(child))) {
+                //System.out.println("expandNode: case 1");
                 nextLayer.add(child);
                 considered.add(child);
             }
             // line 6-14
             else if ((nextLayer.size() == beamWidth) && (!considered.contains(child))) {
+                //System.out.println("expandNode: case 2");
                 considered.add(child);
-                if (child.getValue() > getWorst().getValue()) {
+                if (child.getF() > getWorst().getF()) {
+                    //System.out.println("expandNode: case 2a");
                     Board removed = getWorst();
                     nextLayer.remove(removed);
                     extraNodes.add(removed);
                     nextLayer.add(child);
                 } else {
+                    //System.out.println("expandNode: case 2b");
                     extraNodes.add(child);
                 }
             }
             // lines 15-20
             else if ((nextLayer.size() < beamWidth) && considered.contains(child)) {
+                //System.out.println("expandNode: case 3");
                 Board incumbent = null;
                 for (Board considered : considered) {
                     if (considered.equals(child)) {
@@ -91,7 +102,8 @@ public class BacktrackingBeamSearch {
                     }
                 }
                 assert incumbent != null;
-                if (child.getValue() > incumbent.getValue()) {
+                if (child.getF() > incumbent.getF()) {
+                    //System.out.println("expandNode: case 3a");
                     considered.remove(incumbent);
                     considered.add(child);
                     int removeIndex = -1;
@@ -108,6 +120,7 @@ public class BacktrackingBeamSearch {
             }
             // lines 21-34
             else if ((nextLayer.size() == beamWidth) && considered.contains(child)) {
+                //System.out.println("expandNode: case 4");
                 Board incumbent = null;
                 for (Board considered : considered) {
                     if (considered.equals(child)) {
@@ -115,7 +128,8 @@ public class BacktrackingBeamSearch {
                     }
                 }
                 assert incumbent != null;
-                if ((child.getValue() > incumbent.getValue()) && nextLayer.contains(incumbent)) {
+                if ((child.getF() > incumbent.getF()) && nextLayer.contains(incumbent)) {
+                    //System.out.println("expandNode: case 4a");
                     considered.remove(incumbent);
                     considered.add(child);
                     int removeIndex = -1;
@@ -130,7 +144,8 @@ public class BacktrackingBeamSearch {
                     nextLayer.add(child);
                 }
                 // lines 27-31
-                else if (child.getValue() > getWorst().getValue()) {
+                else if (child.getF() > getWorst().getF()) {
+                    //System.out.println("expandNode: case 4b");
                     considered.remove(incumbent);
                     considered.add(child);
                     Board removed = getWorst();
@@ -138,7 +153,8 @@ public class BacktrackingBeamSearch {
                     extraNodes.add(removed);
                 }
                 // lines 32-34
-                else if (child.getValue() < getWorst().getValue()) {
+                else if (child.getF() < getWorst().getF()) {
+                    //System.out.println("expandNode: case 4c");
                     considered.remove(incumbent);
                     considered.add(child);
                     extraNodes.remove(incumbent);
@@ -152,12 +168,11 @@ public class BacktrackingBeamSearch {
         float value = MAX_VALUE;
         Board worst = null;
         for (Board child : nextLayer) {
-            if (child.getValue() < value) {
+            if (child.getF() < value) {
                 worst = child;
-                value = worst.getValue();
+                value = worst.getF();
             }
         }
         return worst;
     }
-
 }

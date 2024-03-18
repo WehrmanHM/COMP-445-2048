@@ -91,7 +91,7 @@ public class Board {
 
     public Board move(Move move) {
         int newScore = 0;
-        System.out.println(move.toString());
+        //System.out.println(move.toString());
         // Clone the board
         int[][] tiles = new int[this.board.length][];
         for (int x = 0; x < this.board.length; ++x) {
@@ -218,7 +218,7 @@ public class Board {
                 }
             }
         }
-        System.out.println(isGoal);
+        //System.out.println(isGoal);
 		return isGoal;
 	}
 
