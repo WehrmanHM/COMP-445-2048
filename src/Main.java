@@ -2,28 +2,42 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Board board = new Board(4);
-        Player player = new Player();
-        board = board.placeTile();
-        printBoard(board);
-//        BacktrackingBeamSearch backtrack = new BacktrackingBeamSearch(board, 4, 5);
-//        printBoard(backtrack.search());
-        List<Board> successors = board.getSuccessors();
-        for (Board succ : successors) {
-            printBoard(succ);
+        for (int i = 0; i < 50; i++){
+            runAStar(4096, 2);
         }
-        // comment
-//        do {
-//            System.out.println("Player move");
-//            System.out.println("=============");
-//            board = player.makeMove(board);
-//            printBoard(board);
-//
-////            System.out.println("Computer move");
-////            System.out.println("===============");
-////            board = board.placeTile();
-////            printBoard(board);
-//        } while (!board.emptyCells().isEmpty());
+        
+    }
+
+    public static void runAStar(int goalNum, int verbosity){
+
+        Board board = new Board(4);
+        // Create the initial board state
+        board = board.placeTile();
+
+        // Call the A* solver to find the solution
+        long startTime = System.nanoTime();
+        List<Move> solution = AStar.solve(board, goalNum, verbosity);
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+    // Convert elapsed time from nanoseconds to milliseconds
+        double elapsedTimeInSeconds = elapsedTime / 1_000_000_000.0;
+        // Check if a solution is found
+        if (solution != null) {
+            // Print the solution
+            if (verbosity == 1 || verbosity == 2){
+            System.out.println("Solution:");
+            System.out.println("Elapsed time: " + elapsedTimeInSeconds + " seconds");
+            System.out.println(solution.size() +" moves \n \n ");
+            }
+            if (verbosity == 0){System.out.println(solution);}
+        } else {
+            System.out.println("No solution found.");
+        }
+        
+        // List<Board> successors = board.getSuccessors();
+        // for (Board succ : successors) {
+        //     printBoard(succ);
+        // }
     }
 
     public static void printBoard(Board board) {
@@ -62,3 +76,16 @@ public class Main {
         System.out.println("Score: " + board.getScore());
     }
 }
+
+        // comment
+//        do {
+//            System.out.println("Player move");
+//            System.out.println("=============");
+//            board = player.makeMove(board);
+//            printBoard(board);
+//
+////            System.out.println("Computer move");
+////            System.out.println("===============");
+////            board = board.placeTile();
+////            printBoard(board);
+//        } while (!board.emptyCells().isEmpty());

@@ -1,14 +1,13 @@
 import java.util.*;
 
-
-/**
+/*
  * Much of the code below is taken from https://www.baeldung.com/2048-java-solver
  */
 
 public class Board {
     private int[][] board;
     private int score;
-    private Cell spawnCell = new Cell(0, 0);
+    //private Cell spawnCell = new Cell(0, 0);
     private Board parent; // Add parent field to keep track of the parent board
     private Move moveFromParent; // Add moveFromParent field to keep track of the move made from the parent board
 
@@ -45,7 +44,7 @@ public class Board {
         if (emptyCells.isEmpty()) {
             return null;
         } else {
-            Cell newSpawn = emptyCells.getFirst();
+            Cell newSpawn = emptyCells.get(0);
             result.board[newSpawn.getX()][newSpawn.getY()] = 2;
         }
 //        if (!emptyCells.contains(spawnCell)) {
@@ -91,7 +90,6 @@ public class Board {
 
     public Board move(Move move) {
         int newScore = 0;
-        System.out.println(move.toString());
         // Clone the board
         int[][] tiles = new int[this.board.length][];
         for (int x = 0; x < this.board.length; ++x) {
@@ -145,10 +143,12 @@ public class Board {
             result = transpose(result);
         }
 
-        Board successor = new Board(result, this.score + newScore);
-        successor.parent = this; // Set the current board as the parent
-        successor.moveFromParent = move; // Set the move made from the parent
-        return successor.placeTile();
+        Board successor = new Board(result, this.score + newScore).placeTile();
+        if (successor != null) {
+            successor.parent = this; // Set the current board as the parent
+            successor.moveFromParent = move; // Set the move made from the parent
+        }
+        return successor;
     }
 
 
@@ -218,7 +218,6 @@ public class Board {
                 }
             }
         }
-        System.out.println(isGoal);
 		return isGoal;
 	}
 
